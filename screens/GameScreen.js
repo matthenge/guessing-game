@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, StyleSheet, Text, Alert, ScrollView, FlatList } from 'react-native';
+import { View, StyleSheet, Text, Alert, ScrollView, FlatList, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import NumberContainer from "../components/NumberContainer";
@@ -60,9 +60,15 @@ const GameScreen = props => {
         setPastGuesses(curPastGuesses => [nextNumber.toString(), ...curPastGuesses]);
     };
 
+    let listContainerStyle = styles.list;
+
+    if (Dimensions.get('window').width < 300) {
+        listContainerStyle = styles.listBig
+    }
+
     return (
         <View style={styles.screen}>
-            <Text style={DefaultStyles.bodyText}>Opponent's Guess</Text>
+            <Text style={DefaultStyles.title}>Opponent's Guess</Text>
             <NumberContainer>{currentGuess}</NumberContainer>
             <Card style={styles.buttons}>
                 <MainButton onPress={nextGuessHandler.bind(this, 'lower')}>
@@ -72,7 +78,7 @@ const GameScreen = props => {
                     <Ionicons name="md-add" size={24} color="white"/>
                 </MainButton>
             </Card>
-            <View style={styles.list}>
+            <View style={listContainerStyle}>
                 {/*<ScrollView contentContainerStyle={styles.listContent}>*/}
                 {/*    {pastGuesses.map((guess, index) => renderListItem(guess, pastGuesses.length - index))}*/}
                 {/*</ScrollView>*/}
@@ -96,7 +102,8 @@ const styles = StyleSheet.create({
     buttons: {
         flexDirection: 'row',
         justifyContent: 'space-around',
-        marginTop: 20,
+        //Ternary operator to use margin depending on the screen size
+        marginTop: Dimensions.get('window').height > 600 ? 20 : 5,
         width: 500,
         maxWidth: '98%'
     },
@@ -113,6 +120,10 @@ const styles = StyleSheet.create({
     list: {
         flex: 1,
        width: '60%'
+    },
+    listBig: {
+        flex: 1,
+        width: '80%'
     },
     listContent: {
         flexGrow: 1,
